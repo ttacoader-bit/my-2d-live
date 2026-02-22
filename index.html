@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2D Live Real-Time</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            background-color: #0e0e0e;
+            color: #ffffff;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            padding: 20px;
+            border: 2px solid #333;
+            border-radius: 20px;
+            background: #1a1a1a;
+            width: 80%;
+        }
+        h1 { font-size: 1.2rem; color: #aaa; }
+        .live-number {
+            font-size: 100px;
+            font-weight: bold;
+            color: #00ff00; /* အစိမ်းရောင် */
+            margin: 20px 0;
+            text-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+        }
+        .status { color: #666; font-size: 0.8rem; }
+        .time { color: #ffcc00; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>2D LIVE REAL-TIME</h1>
+        <div id="live-number" class="live-number">--</div>
+        <div class="time" id="live-time">Loading...</div>
+        <p class="status">Live Update Every 2 Seconds</p>
+    </div>
+
+    <script>
+        const liveNumDisplay = document.getElementById('live-number');
+        const liveTimeDisplay = document.getElementById('live-time');
+
+        async function fetch2D() {
+            try {
+                // အများသုံး 2D API တစ်ခုကို sample သုံးထားပါတယ်
+                const response = await fetch('https://api.thaistock2d.com/live');
+                const data = await response.json();
+
+                // API ရဲ့ format အတိုင်း ဂဏန်းကို ဆွဲထုတ်ခြင်း
+                // မှတ်ချက် - API ပြောင်းလဲမှုပေါ်မူတည်ပြီး 'data.live.twod' နေရာ ပြင်ရနိုင်ပါတယ်
+                if(data && data.live) {
+                    liveNumDisplay.innerText = data.live.twod;
+                    liveTimeDisplay.innerText = "Last Update: " + data.live.time;
+                }
+            } catch (error) {
+                console.log("Error fetching data:", error);
+                // API ဒေါင်းနေရင် သို့မဟုတ် Error တက်ရင် ပြမယ့်ပုံစံ
+                // liveNumDisplay.innerText = "!!"; 
+            }
+        }
+
+        // ၂ စက္ကန့်တစ်ခါ အလိုအလျောက် Update လုပ်ခိုင်းခြင်း
+        setInterval(fetch2D, 2000);
+
+        // စဖွင့်ချင်း တစ်ခါ run ပေးခြင်း
+        fetch2D();
+
+        // Telegram WebApp အဆင်သင့်ဖြစ်အောင် လုပ်ခြင်း
+        window.Telegram.WebApp.ready();
+        window.Telegram.WebApp.expand(); // Screen အပြည့်ချဲ့လိုက်တာ
+    </script>
+</body>
+</html>
