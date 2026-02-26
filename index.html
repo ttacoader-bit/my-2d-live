@@ -7,68 +7,21 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root {
-            --primary-blue: #0047ff;
-            --secondary-blue: #002db3;
-            --bg-light: #f4f7f6;
-            --text-dark: #333;
-        }
-        body {
-            background-color: var(--bg-light);
-            color: var(--text-dark);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0; padding: 0;
-            display: flex; flex-direction: column; height: 100vh;
-        }
-        .top-header {
-            padding: 20px; text-align: center; background: white;
-        }
-        .main-live-number {
-            font-size: 80px; font-weight: 900; margin: 0; color: #000;
-        }
-        .update-tag {
-            background: #e1f5fe; color: #039be5; padding: 5px 15px;
-            border-radius: 20px; font-size: 13px; font-weight: bold;
-        }
-        .result-grid {
-            display: grid; grid-template-columns: 1fr 1fr;
-            gap: 15px; padding: 15px;
-        }
-        .card {
-            border-radius: 25px; padding: 20px; color: white;
-            text-align: center; position: relative;
-            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
-            box-shadow: 0 10px 20px rgba(0, 71, 255, 0.2);
-        }
-        .card-time { font-size: 14px; opacity: 0.9; margin-bottom: 5px; }
+        :root { --p-blue: #0047ff; --s-blue: #002db3; --bg: #f4f7f6; }
+        body { background-color: var(--bg); font-family: sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; }
+        .top-header { padding: 20px; text-align: center; background: white; }
+        .main-live-number { font-size: 80px; font-weight: 900; margin: 0; }
+        .update-tag { background: #e1f5fe; color: #039be5; padding: 5px 15px; border-radius: 20px; font-size: 13px; font-weight: bold; }
+        .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px; }
+        .card { border-radius: 25px; padding: 20px; color: white; text-align: center; background: linear-gradient(135deg, var(--p-blue), var(--s-blue)); box-shadow: 0 10px 20px rgba(0, 71, 255, 0.2); }
         .card-num { font-size: 40px; font-weight: bold; margin: 10px 0; }
         .card-detail { font-size: 11px; opacity: 0.8; text-transform: uppercase; margin-top: 5px; }
-        .card-val { font-size: 14px; font-weight: bold; color: #fff; }
-
-        .list-container {
-            background: white; margin: 0 15px; border-radius: 20px;
-            padding: 10px 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        }
-        .list-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 0; border-bottom: 1px solid #eee;
-        }
-        .list-item:last-child { border-bottom: none; }
-        .label-title { font-size: 12px; color: #888; margin: 0; }
-        .label-num { font-size: 18px; font-weight: bold; margin: 0; }
-        .time-badge { font-size: 14px; color: #666; }
-        .internet-box {
-            background: #2962ff; color: white; padding: 5px 10px;
-            border-radius: 8px; font-weight: bold; min-width: 35px; text-align: center;
-        }
-
-        .nav-bar {
-            margin-top: auto; background: white; display: flex;
-            justify-content: space-around; padding: 12px 0;
-            border-top: 1px solid #eee; position: sticky; bottom: 0;
-        }
+        .list-container { background: white; margin: 0 15px; border-radius: 20px; padding: 10px 20px; }
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #eee; }
+        .internet-box { background: #2962ff; color: white; padding: 5px 10px; border-radius: 8px; font-weight: bold; min-width: 35px; text-align: center; }
+        .nav-bar { margin-top: auto; background: white; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #eee; position: sticky; bottom: 0; }
         .nav-item { text-align: center; color: #aaa; flex: 1; font-size: 11px; }
-        .nav-item.active { color: var(--primary-blue); }
+        .nav-item.active { color: var(--p-blue); }
         .nav-item i { font-size: 20px; display: block; margin-bottom: 3px; }
     </style>
 </head>
@@ -81,29 +34,29 @@
 
     <div class="result-grid">
         <div class="card">
-            <div class="card-time">12:01 PM</div>
-            <div class="card-num" id="morning-num">14</div>
-            <div class="card-detail">SET: <span class="card-val" id="m-set">1,529.41</span></div>
-            <div class="card-detail">VALUE: <span class="card-val" id="m-val">44,254.20</span></div>
+            <div style="font-size:14px">12:01 PM</div>
+            <div class="card-num" id="morning-num">--</div>
+            <div class="card-detail">SET: <b id="m-set">--</b></div>
+            <div class="card-detail">VAL: <b id="m-val">--</b></div>
         </div>
         <div class="card" style="background: linear-gradient(135deg, #1e40af, #1e3a8a);">
-            <div class="card-time">04:30 PM</div>
+            <div style="font-size:14px">04:30 PM</div>
             <div class="card-num" id="evening-num">--</div>
-            <div class="card-detail">SET: <span class="card-val" id="e-set">--</span></div>
-            <div class="card-detail">VALUE: <span class="card-val" id="e-val">--</span></div>
+            <div class="card-detail">SET: <b id="e-set">--</b></div>
+            <div class="card-detail">VAL: <b id="e-val">--</b></div>
         </div>
     </div>
 
     <div class="list-container">
         <div class="list-item">
-            <div><p class="label-title">Modern</p><p class="label-num" id="modern-930">03</p></div>
-            <div class="time-badge">9:30 AM</div>
-            <div style="text-align:right;"><p class="label-title">Internet</p><div class="internet-box" id="internet-930">79</div></div>
+            <div><p style="font-size:12px;color:#888;margin:0">Modern</p><p style="font-size:18px;font-weight:bold;margin:0" id="modern-930">--</p></div>
+            <div style="font-size:14px;color:#666">9:30 AM</div>
+            <div style="text-align:right;"><p style="font-size:12px;color:#888;margin:0">Internet</p><div class="internet-box" id="internet-930">--</div></div>
         </div>
         <div class="list-item">
-            <div><p class="label-title">Modern</p><p class="label-num" id="modern-200">--</p></div>
-            <div class="time-badge">2:00 PM</div>
-            <div style="text-align:right;"><p class="label-title">Internet</p><div class="internet-box" id="internet-200">--</div></div>
+            <div><p style="font-size:12px;color:#888;margin:0">Modern</p><p style="font-size:18px;font-weight:bold;margin:0" id="modern-200">--</p></div>
+            <div style="font-size:14px;color:#666">2:00 PM</div>
+            <div style="text-align:right;"><p style="font-size:12px;color:#888;margin:0">Internet</p><div class="internet-box" id="internet-200">--</div></div>
         </div>
     </div>
 
@@ -112,7 +65,6 @@
         <div class="nav-item"><i class="fas fa-calendar-alt"></i><span>Calendar</span></div>
         <div class="nav-item"><i class="fas fa-gift"></i><span>Tips</span></div>
         <div class="nav-item"><i class="fas fa-chart-line"></i><span>3D</span></div>
-        <div class="nav-item"><i class="fas fa-th-list"></i><span>Settings</span></div>
     </div>
 
     <script>
@@ -125,49 +77,42 @@
                     const l = data.live;
                     const res = data.result;
 
-                    // ၁။ ထိပ်ဆုံး Live နံပါတ်နှင့် Update အချိန်
                     document.getElementById('main-num').innerText = l.twod;
                     document.getElementById('sync-time').innerText = l.time;
                     
-                    // ၂။ မနက်ပိုင်း (12:01 PM) - ပုံသေသတ်မှတ်ခြင်း
-                    const morning = res.find(r => r.open_time.includes("12:01")) || res[1];
-                    document.getElementById('morning-num').innerText = morning?.twod || "14";
-                    document.getElementById('m-set').innerText = morning?.set || "1,529.41";
-                    document.getElementById('m-val').innerText = morning?.value || "44,254.20";
-
-                    // ၃။ ညနေပိုင်း (04:30 PM) - ဂဏန်းမထွက်ခင် SET/VAL ကို Live ပြခြင်း
-                    const evening = res.find(r => r.open_time.includes("16:30"));
-                    if (evening && evening.twod && evening.twod !== "--") {
-                        // ညနေပိုင်း ဂဏန်းအမှန်ထွက်သွားလျှင်
-                        document.getElementById('evening-num').innerText = evening.twod;
-                        document.getElementById('e-set').innerText = evening.set;
-                        document.getElementById('e-val').innerText = evening.value;
-                    } else {
-                        // ဂဏန်းမထွက်သေးလျှင် SET နှင့် VALUE ကို Live (ထိပ်ဆုံးကဂဏန်း) အတိုင်းပြမည်
-                        document.getElementById('evening-num').innerText = "--";
-                        document.getElementById('e-set').innerText = l.set; // Live SET
-                        document.getElementById('e-val').innerText = l.value; // Live VALUE
-                    }
-
-                    // ၄။ Modern & Internet Section
+                    // 9:30 AM (Modern & Internet)
                     const r930 = res.find(r => r.open_time.includes("09:30"));
-                    document.getElementById('modern-930').innerText = r930?.modern || "03";
-                    document.getElementById('internet-930').innerText = r930?.twod || "79";
+                    document.getElementById('modern-930').innerText = r930?.modern || "--";
+                    document.getElementById('internet-930').innerText = r930?.twod || "--";
 
+                    // 12:01 PM (Morning Result)
+                    const r1201 = res.find(r => r.open_time.includes("12:01"));
+                    document.getElementById('morning-num').innerText = r1201?.twod || "14";
+                    document.getElementById('m-set').innerText = r1201?.set || "1,529.41";
+                    document.getElementById('m-val').innerText = r1201?.value || "44,254.20";
+
+                    // 2:00 PM (Modern & Internet) - ပြင်ဆင်ထားသောအပိုင်း
                     const r200 = res.find(r => r.open_time.includes("14:00"));
                     document.getElementById('modern-200').innerText = r200?.modern || "--";
                     document.getElementById('internet-200').innerText = r200?.twod || "--";
+
+                    // 4:30 PM (Evening)
+                    const r1630 = res.find(r => r.open_time.includes("16:30"));
+                    if (r1630 && r1630.twod && r1630.twod !== "--") {
+                        document.getElementById('evening-num').innerText = r1630.twod;
+                        document.getElementById('e-set').innerText = r1630.set;
+                        document.getElementById('e-val').innerText = r1630.value;
+                    } else {
+                        document.getElementById('evening-num').innerText = "--";
+                        document.getElementById('e-set').innerText = l.set;
+                        document.getElementById('e-val').innerText = l.value;
+                    }
                 }
-            } catch (e) { 
-                console.log("Fetch Error"); 
-            }
+            } catch (e) { console.log("Fetch Error"); }
         }
 
-        // ၂ စက္ကန့်တစ်ခါ Update လုပ်ခြင်း
         setInterval(updateData, 2000);
         updateData();
-
-        // Telegram Setup
         window.Telegram.WebApp.ready();
         window.Telegram.WebApp.expand();
     </script>
