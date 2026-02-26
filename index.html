@@ -128,32 +128,57 @@
 
     <script>
         async function updateData() {
-            try {
-                const response = await fetch('https://api.thaistock2d.com/live');
-                const data = await response.json();
-                
-                if(data && data.live) {
-                    const l = data.live;
-                    document.getElementById('main-num').innerText = l.twod;
-                    document.getElementById('sync-time').innerText = l.time;
-                    
-                    // Morning Box
-                    document.getElementById('morning-num').innerText = data.result[0]?.twod || "--";
-                    document.getElementById('m-set').innerText = data.result[0]?.set || "-";
-                    document.getElementById('m-val').innerText = data.result[0]?.value || "-";
+    try {
+        const response = await fetch('https://api.thaistock2d.com/live');
+        const data = await response.json();
+        
+        if(data && data.live) {
+            const l = data.live;
+            const res = data.result; // ဂဏန်းဟောင်းများ list
 
-                    // Evening Box
-                    document.getElementById('evening-num').innerText = data.result[1]?.twod || "--";
-                    document.getElementById('e-set').innerText = data.result[1]?.set || "-";
-                    document.getElementById('e-val').innerText = data.result[1]?.value || "-";
-                }
-            } catch (e) { console.log("Fetch Error"); }
+            // ၁။ ထိပ်ဆုံးက Live ဂဏန်းအကြီး
+            document.getElementById('main-num').innerText = l.twod;
+            document.getElementById('sync-time').innerText = l.time;
+            
+            // ၂။ မနက်ပိုင်း (12:01 PM) - ပုံမှန်အားဖြင့် index 0 သို့မဟုတ် open_time နဲ့ရှာမယ်
+            const morning = res.find(r => r.open_time === "12:01:00") || res[0];
+            document.getElementById('morning-num').innerText = morning?.twod || "--";
+            document.getElementById('m-set').innerText = morning?.set || "-";
+            document.getElementById('m-val').innerText = morning?.value || "-";
+
+            // ၃။ ညနေပိုင်း (04:30 PM) - open_time 16:30:00 နဲ့ရှာမယ်
+            const evening = res.find(r => r.open_time === "16:30:00");
+            if (evening && evening.twod) {
+                document.getElementById('evening-num').innerText = evening.twod;
+                document.getElementById('e-set').innerText = evening.set;
+                document.getElementById('e-val').innerText = evening.value;
+            } else {
+                document.getElementById('evening-num').innerText = "--";
+                document.getElementById('e-set').innerText = "----.--";
+                document.getElementById('e-val').innerText = "----.--";
+            }
+
+            // ၄။ Modern & Internet (9:30 AM)
+            // 9:30 AM data ကို API ရဲ့ သက်ဆိုင်ရာ index သို့မဟုတ် time အလိုက် ဆွဲထုတ်ခြင်း
+            const data930 = res.find(r => r.open_time === "09:30:00");
+            document.getElementById('modern-930').innerText = data930?.modern || "--";
+            document.getElementById('internet-930').innerText = data930?.twod || "--";
+
+            // ၅။ Modern & Internet (2:00 PM)
+            const data200 = res.find(r => r.open_time === "14:00:00");
+            document.getElementById('modern-200').innerText = data200?.modern || "--";
+            document.getElementById('internet-200').innerText = data200?.twod || "--";
         }
+    } catch (e) { 
+        console.log("Fetch Error"); 
+        // Error တက်ရင် Loading သို့မဟုတ် -- ပြပေးထားခြင်း
+    }
+}
 
-        setInterval(updateData, 2000);
-        updateData();
-        window.Telegram.WebApp.ready();
-        window.Telegram.WebApp.expand();
-    </script>
-</body>
-</html>
+// ၂ စက္ကန့်တစ်ခါ အလိုအလျောက် Update လုပ်ခြင်း
+setInterval(updateData, 2000);
+updateData();
+
+// Telegram WebApp Setup
+window.Telegram.WebApp.ready();
+window.Telegram.WebApp.expand();
